@@ -1,0 +1,32 @@
+{
+	"name": "remote-mcp-authkit",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"build": "tsc -p .",
+		"cf-typegen": "wrangler types --env example",
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"format": "biome format --write",
+		"lint": "biome lint",
+		"lint:fix": "biome lint --fix",
+		"start": "wrangler dev",
+		"type-check": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@cloudflare/workers-oauth-provider": "^0.0.5",
+		"@modelcontextprotocol/sdk": "1.17.1",
+		"@workos-inc/node": "^7.63.0",
+		"agents": "^0.0.109",
+		"hono": "^4.8.12",
+		"jose": "^6.0.12",
+		"workers-mcp": "^0.0.13",
+		"zod": "^3.25.67"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.1.3",
+		"@cloudflare/workers-types": "^4.20250803.0",
+		"typescript": "5.8.3",
+		"wrangler": "^4.27.0"
+	}
+}
