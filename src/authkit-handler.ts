@@ -64,6 +64,8 @@ app.get("/authorize", async (c) => {
 	if (!oauthReqInfo.clientId) {
 		return c.text("Invalid request", 400);
 	}
+    console.info(new URL("/callback", c.req.url).href)
+    console.info(oauthReqInfo)
 	return Response.redirect(
 		c.get("workOS").userManagement.getAuthorizationUrl({
 			provider: "authkit",
@@ -75,8 +77,10 @@ app.get("/authorize", async (c) => {
 });
 
 app.get("/callback", async (c) => {
+    console.error('fewf')
 	const workOS = c.get("workOS");
 	const oauthReqInfo = JSON.parse(atob(c.req.query("state") as string)) as AuthRequest;
+    console.info(oauthReqInfo)
 	if (!oauthReqInfo.clientId) {
 		return c.text("Invalid state", 400);
 	}
@@ -109,6 +113,9 @@ app.get("/callback", async (c) => {
 			user,
 		} satisfies Props,
 	});
+
+    console.info(redirectTo)
+    console.info("above")
 	return Response.redirect(redirectTo);
 });
 
