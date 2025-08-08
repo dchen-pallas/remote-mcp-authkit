@@ -60,6 +60,27 @@ app.options("/.well-known/oauth-authorization-server/sse", (c) => {
 	});
 });
 
+// Add this after the existing SSE well-known endpoint
+app.get("/.well-known/oauth-authorization-server/mcp", (c) => {
+	const baseUrl = new URL(c.req.url).origin;
+	return c.json({
+		issuer: baseUrl,
+		mcp_endpoint: `${baseUrl}/mcp`,
+		token_endpoint: `${baseUrl}/token`,
+		scopes_supported: ["mcp:read", "mcp:write"],
+		code_challenge_methods_supported: ["S256", "plain"],
+		transport: "http"
+	});
+});
+
+// Add this after the existing OPTIONS handlers
+app.options("/.well-known/oauth-authorization-server/mcp", (c) => {
+	return new Response(null, {
+		status: 204,
+		headers: createCorsHeaders()
+	});
+});
+
 const extractPkceParams = (url: URL) => ({
 	codeChallenge: url.searchParams.get("code_challenge"),
 	codeChallengeMethod: url.searchParams.get("code_challenge_method")
@@ -155,7 +176,7 @@ app.get("/callback", async (c) => {
 			return c.text("Invalid state", 400);
 		}
 
-		const scope = extractScopeFromToken(authResult.access_token);
+		const scope = authResult.permissions|| extractScopeFromToken(authResult.access_token); 
 
 		const { redirectTo } = await c.env.OAUTH_PROVIDER.completeAuthorization({
 			request: oauthReqInfo,

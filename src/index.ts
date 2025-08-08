@@ -4,7 +4,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 //import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { z } from "zod";
 //import { AuthkitHandler } from "./authkit-handler";
-import { AuthkitHandler } from "./cloud-core-handler";
+//import { AuthkitHandler } from "./cloud-core-handler";
+import { AuthkitHandler } from "./pls-handler";
 import type { Props } from "./props";
 
 export class MyMCP extends McpAgent<Env, unknown, Props> {
@@ -70,7 +71,10 @@ export class MyMCP extends McpAgent<Env, unknown, Props> {
 
 export default new OAuthProvider({
 	apiRoute: "/sse",
-	apiHandler: MyMCP.mount("/sse") as any, // Use 'any' for maximum flexibility
+	apiHandlers: {
+        "/sse": MyMCP.serveSSE("/sse") as any, // Use 'any' for maximum flexibility
+        "/mcp": MyMCP.serve("/mcp") as any
+    },
 	defaultHandler: AuthkitHandler as any, // Use 'any' for maximum flexibility
 	authorizeEndpoint: "/authorize",
 	tokenEndpoint: "/token",
